@@ -11,6 +11,7 @@ struct ContentView: View {
     @State private var checkAmount = 0.0
     @State private var numberOfPeople = 0
     @State private var tipPercentage = 20
+    @State private var tipIsZero: Bool = false
     @FocusState private var amountIsFocused: Bool
     
     let localCurrency: FloatingPointFormatStyle<Double>.Currency = .currency(code: Locale.current.currencyCode ?? "USD")
@@ -48,12 +49,16 @@ struct ContentView: View {
                         }
                     }
                     .pickerStyle(.wheel)
+                    .onChange(of: tipPercentage) { newTipPercentage in
+                        tipIsZero = (newTipPercentage == 0)
+                    }
                 } header: { // Second trailing closure:
                     Text("How much tip do you want to leave?")
                 }
                 
                 Section {
                     Text(grandTotal, format: localCurrency)
+                        .foregroundColor(tipIsZero ? .red : .none)
                 } header: {
                     Text("Total amount")
                 }
